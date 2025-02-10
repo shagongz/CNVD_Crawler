@@ -4,6 +4,7 @@ import copy
 import json
 import time
 from cookie import CookieFetcher
+import os
 
 
 cookies = {
@@ -15,20 +16,8 @@ cookies = {
 
 # 获取首页list，可指定页数
 def get_page(page_num=1):
-    headers = {'Host': 'www.cnvd.org.cn',
-               'Connection': 'keep-alive',
-               'Content-Length': '135',
-               'Cache-Control': 'max-age=0',
-               'sec-ch-ua': '"Not A(Brand";v="8", "Chromium";v="132", "Microsoft Edge";v="132"',
-               'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"',
-               'Upgrade-Insecure-Requests': '1',
-               'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 Edg/132.0.0.0',
-               'Origin': 'https://www.cnvd.org.cn', 'Content-Type': 'application/x-www-form-urlencoded',
-               'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-               'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-User': '?1',
-               'Sec-Fetch-Dest': 'document', 'Referer': 'https://www.cnvd.org.cn/flaw/list',
-               'Accept-Encoding': 'gzip, deflate, br, zstd',
-               'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'}
+    headers = {'Host': 'www.cnvd.org.cn', 'Connection': 'keep-alive', 'Cache-Control': 'max-age=0', 'sec-ch-ua': '"Not(A:Brand";v="99", "Microsoft Edge";v="133", "Chromium";v="133"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-User': '?1', 'Sec-Fetch-Dest': 'document', 'Referer': 'https://www.cnvd.org.cn/flaw/show/CNVD-2025-02160', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'}
+
     global cookies
     offset = page_num * 10 - 10
     params = (
@@ -85,20 +74,7 @@ def get_page(page_num=1):
 
 # 获取详情页信息，传入指定url
 def get_inform(url):
-    headers = {
-        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-        'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'priority': 'u=0, i',
-        'referer': 'https://www.cnvd.org.cn/flaw/list?flag=true',
-        'sec-ch-ua': '"Not A(Brand";v="8", "Chromium";v="132", "Microsoft Edge";v="132"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Windows"',
-        'sec-fetch-dest': 'document',
-        'sec-fetch-mode': 'navigate',
-        'sec-fetch-site': 'same-origin',
-        'sec-fetch-user': '?1',
-        'upgrade-insecure-requests': '1',
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 Edg/132.0.0.0',
-    }
+    headers = {'Host': 'www.cnvd.org.cn', 'Connection': 'keep-alive', 'Cache-Control': 'max-age=0', 'sec-ch-ua': '"Not(A:Brand";v="99", "Microsoft Edge";v="133", "Chromium";v="133"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 Edg/133.0.0.0', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7', 'Sec-Fetch-Site': 'same-origin', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-User': '?1', 'Sec-Fetch-Dest': 'document', 'Referer': 'https://www.cnvd.org.cn/flaw/show/CNVD-2025-02160', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'}
     global cookies
     url = 'https://www.cnvd.org.cn' + url
     response = requests.get(url, headers=headers, cookies=cookies)
@@ -183,8 +159,13 @@ if __name__ == '__main__':
         page ：传入想抓取的起始页和结束页，也可以设置请求时间间隔sleep_time。
                 因为未做随机ip，所以需时间设长些，否则容易封ip
     '''
+    # 获取当前脚本所在目录的路径
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # 构建 msedgedriver 的相对路径
+    edge_driver_path = os.path.join(current_dir, "msedgedriver.exe")
     # 创建 CookieFetcher 实例
-    cookie_fetcher = CookieFetcher("msedgedriver.exe")
+    cookie_fetcher = CookieFetcher(edge_driver_path)
     cookies = cookie_fetcher.new_cookie()
 
     # page(1, 2)
@@ -200,7 +181,7 @@ if __name__ == '__main__':
     while True:
         num_lis = [int(num) for num in input('请输入要抓取的起始页和终止页序号（如：5 10）：').split(' ') if num != '']
         if len(num_lis) == 2:
-            page(num_lis[0], num_lis[1])
+            page(num_lis[0], num_lis[1], 10)
 
 
 

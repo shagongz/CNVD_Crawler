@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.edge.service import Service
 from selenium.webdriver.edge.options import Options
 import time
+import os
 
 
 class CookieFetcher:
@@ -14,9 +15,10 @@ class CookieFetcher:
 
         # 设置 WebDriver 路径
         self.edge_driver_path = edge_driver_path
+	  
 
         # 创建 Edge 服务对象
-        self.service = Service(self.edge_driver_path)
+        self.service = Service(executable_path=self.edge_driver_path)
 
         # 启动 Edge 浏览器
         self.driver = webdriver.Edge(service=self.service, options=self.edge_options)
@@ -59,7 +61,11 @@ class CookieFetcher:
 
 
 if __name__ == "__main__":
-    edge_driver_path = "C:\\Python\\Python39\\msedgedriver.exe"
+    # 获取当前脚本所在目录的路径
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # 构建 msedgedriver 的相对路径
+    edge_driver_path = os.path.join(current_dir, "msedgedriver.exe")
 
     # 创建 CookieFetcher 实例
     cookie_fetcher = CookieFetcher(edge_driver_path)
